@@ -23,6 +23,7 @@ import {
   WindIcon,
   AppWindow,
   Menu,
+  ChartArea,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -34,6 +35,11 @@ const menus = {
     { name: "Billing", href: "/apps/default/billings", icon: <Banknote size={20} /> },
     { name: "Requests", href: "/apps/default/requests", icon: <Pen size={20} /> },
     { name: "Settings", href: "/apps/default/settings", icon: <Settings size={20} /> },
+  ],
+  clients: [
+    { name: "Home", href: "/", icon: <Home size={20} /> },
+    { name: "Dashboard", href: "/apps/clients", icon: <ChartArea size={20} /> },
+    { name: "Clients", href: "/apps/clients/list", icon: <AppWindow size={20} /> },
   ],
   crm: [
     { name: "Home", href: "/", icon: <Home size={20} /> },
