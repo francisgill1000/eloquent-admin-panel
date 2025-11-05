@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
             <Header />
 
             <div className="px-6 pb-6">
-              <div className="grid gap-6">
+              <div className="grid gap-6 p-4">
                 {children}
               </div>
             </div>

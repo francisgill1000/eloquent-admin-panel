@@ -12,7 +12,7 @@ export default [
                     className="w-8 h-8 rounded-full object-cover shadow-sm"
                     src={
                         client.profile_picture ||
-                        `https://placehold.co/40x40/6946dd/ffffff?text=${client.name.charAt(0)}`
+                        `https://placehold.co/40x40/0f0f0f/00ffcc?text=${client.name.charAt(0)}`
                     }
 
                 />

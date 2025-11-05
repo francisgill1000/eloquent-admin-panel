@@ -2,26 +2,33 @@
 
 import { Loader2 } from "lucide-react";
 
+import CustomLoader from '@/components/ui/AIPlaceholderLoader';
+
 export default function DataTable({
   columns = [],
   data = [],
   isLoading = false,
   error = null,
   emptyMessage = "No data found.",
-  onRowClick = () => {},
+  onRowClick = () => { },
   pagination = null,
 }) {
+
   return (
-    <div className=" rounded-xl shadow-lg border border-gray-200 min-h-[800px] max-h-[400px] flex flex-col">
+
+    <div className=" rounded-xl shadow-lg overflow-hidden border border-gray-200 min-h-[800px] max-h-[400px] flex flex-col">
+
+      {isLoading && <CustomLoader />}
+
       {/* Table wrapper */}
-      <div className="overflow-x-auto overflow-y-auto flex-1">
+      <div className="overflow-x-auto overflow-y-auto flex-1 scrollbar-custom">
         <table className="w-full text-left table-auto">
-          <thead className=" border-b border-gray-200 sticky top-0 z-10">
+          <thead className="bg-[#1b1b1b] border-b border-gray-200 sticky top-0 z-10">
             <tr>
-              {columns.map((col) => (
+              {columns.map((col, i) => (
                 <th
-                  key={col.key}
-                  className="p-4 font-semibold text-xs text-muted uppercase tracking-wider min-w-[150px]"
+                  key={i}
+                  className="p-4 font-semibold text-xs text-muted/100 uppercase tracking-wider min-w-[150px]"
                 >
                   {col.header}
                 </th>
@@ -64,14 +71,14 @@ export default function DataTable({
             ) : (
               data.map((item, i) => (
                 <tr
-                  key={item.id || i}
+                  key={i}
                   className="border-b border-gray-200 hover:text-muted transition-colors cursor-pointer"
                   onClick={() => onRowClick(item)}
                 >
-                  {columns.map((col) => (
+                  {columns.map((col, j) => (
                     <td
-                      key={col.key}
-                      className="p-4 whitespace-nowrap"
+                      key={j}
+                      className="p-4 text-sm text-muted-foreground whitespace-nowrap"
                     >
                       {col.render ? col.render(item) : item[col.key] || "—"}
                     </td>

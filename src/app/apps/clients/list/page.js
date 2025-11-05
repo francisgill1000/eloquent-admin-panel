@@ -1,87 +1,106 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from "react";
+import { RefreshCw } from "lucide-react";
 
-import { parseApiError } from '@/lib/utils';
-
-import Pagination from '@/lib/Pagination';
-import DataTable from '@/components/ui/DataTable';
+import { parseApiError } from "@/lib/utils";
+import Pagination from "@/lib/Pagination";
+import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function AttendanceTable() {
-
-  // filters
-
   const [employees, setAttendance] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Pagination State
+  // Pagination & search
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(25);
   const [total, setTotalAttendance] = useState(0);
 
+  const [speaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     fetchRecords();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, search]);
+
+  useEffect(() => {
+    if (isLoading) {
+      const utterance = new SpeechSynthesisUtterance("Loading client data...");
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      utterance.lang = "en-US";
+
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [isLoading]);
 
   const fetchRecords = async () => {
     try {
       setIsLoading(true);
 
-      const params = {
-        page: currentPage,
-        per_page: perPage,
-      };
+      // Simulate delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const { data } = await axios.get("customers");
+      const params = { page: currentPage, per_page: perPage, search };
 
-      console.log(data.data);
+      const { data } = await axios.get("customers", { params });
 
-
-      // Check if result has expected structure before setting state
       if (data && Array.isArray(data.data)) {
         setAttendance(data.data);
         setCurrentPage(data.current_page || 1);
         setTotalAttendance(data.total || 0);
-        setIsLoading(false);
-        return; // Success, exit
       } else {
-        // If the API returned a 2xx status but the data structure is wrong
-        throw new Error('Invalid data structure received from API.');
+        throw new Error("Invalid data structure received from API.");
       }
-
+      setIsLoading(false);
     } catch (error) {
-      setError(parseApiError(error))
-      setIsLoading(false); // Make sure loading state is turned off on error
+      setError(parseApiError(error));
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="flex flex-wrap items-center space-x-3 space-y-2 mb-2 sm:space-y-0">
-        <h1 className="text-2xl font-extrabold flex items-center">
-          {/* <User className="w-7 h-7 mr-3 text-indigo-600" /> */}
+    <div className="">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-accent font-semibold text-lg flex items-center">
           Clients
-        </h1>
+          <RefreshCw
+            onClick={fetchRecords}
+            className={`w-5 h-5 ml-2 ${isLoading ? "animate-spin" : ""}`}
+          />
+          {speaking && (
+            <span
+              className="ml-2 w-3 h-3 bg-green-400 rounded-full animate-pulse"
+              title="Speaking"
+            ></span>
+          )}
+        </h3>
 
-        {/* <div className="flex flex-col">
-                    <DropDown
-                        placeholder={'Select Branch'}
-                        onChange={setSelectedBranch}
-                        value={selectedBranch}
-                        items={branches}
-                    />
-                </div> */}
+        <div className="flex items-center gap-3">
+          <Input
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-[#0f0f0f] text-white p-2 rounded-lg outline-none border border-[#00ffcc1a] focus:border-[#00ffcc] w-48 md:w-64"
+          />
 
-
-        {/* Refresh Button */}
-        {/* <button onClick={fetchRecords} className="bg-primary text-white px-4 py-1 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-all flex items-center space-x-2 whitespace-nowrap">
-                    <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} /> Submit
-                </button> */}
-
-        {/* <EmployeeExtras data={employees} onUploadSuccess={fetchRecords} /> */}
+          <Button
+            onClick={fetchRecords}
+            className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
+          >
+            New Client
+          </Button>
+        </div>
       </div>
 
       <DataTable
@@ -104,6 +123,6 @@ export default function AttendanceTable() {
           />
         }
       />
-    </>
+    </div>
   );
 }
