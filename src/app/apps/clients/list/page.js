@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { RefreshCw } from "lucide-react";
 
 import { parseApiError } from "@/lib/utils";
@@ -8,11 +8,14 @@ import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import Create from "./Create";
+import { debounce } from "@/lib/debounce";
+
+let PAGE_TITLE = "Client";
 
 export default function AttendanceTable() {
   const [employees, setAttendance] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Pagination & search
@@ -23,35 +26,12 @@ export default function AttendanceTable() {
 
   const [speaking, setIsSpeaking] = useState(false);
 
-  useEffect(() => {
-    fetchRecords();
-  }, [currentPage, perPage, search]);
-
-  useEffect(() => {
-    if (isLoading) {
-      const utterance = new SpeechSynthesisUtterance("Loading client data...");
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      utterance.lang = "en-US";
-
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
-    }
-  }, [isLoading]);
-
+  // Fetch function (search passed explicitly)
   const fetchRecords = async () => {
     try {
       setIsLoading(true);
 
-      // Simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const params = { page: currentPage, per_page: perPage, search };
-
+      const params = { page: currentPage, per_page: perPage };
       const { data } = await axios.get("customers", { params });
 
       if (data && Array.isArray(data.data)) {
@@ -61,12 +41,32 @@ export default function AttendanceTable() {
       } else {
         throw new Error("Invalid data structure received from API.");
       }
+
       setIsLoading(false);
     } catch (error) {
       setError(parseApiError(error));
       setIsLoading(false);
     }
   };
+
+
+  // Trigger fetch on search change
+  useEffect(() => {
+    fetchRecords();
+  }, [currentPage, perPage]);
+
+  // Initial fetch & pagination/perPage change
+  useEffect(() => {
+    fetchRecords(search);
+  }, [currentPage, perPage]); // no search here
+
+  const handleSuccess = (e) => { fetchRecords(), console.log(e); }
+
+
+  const columns = Columns({
+    onSuccess: handleSuccess,
+    pageTitle: PAGE_TITLE
+  });
 
   return (
     <div className="">
@@ -75,7 +75,7 @@ export default function AttendanceTable() {
         <h3 className="text-accent font-semibold text-lg flex items-center">
           Clients
           <RefreshCw
-            onClick={fetchRecords}
+            onClick={() => fetchRecords(search)}
             className={`w-5 h-5 ml-2 ${isLoading ? "animate-spin" : ""}`}
           />
           {speaking && (
@@ -93,18 +93,12 @@ export default function AttendanceTable() {
             onChange={(e) => setSearch(e.target.value)}
             className="bg-[#0f0f0f] text-white p-2 rounded-lg outline-none border border-[#00ffcc1a] focus:border-[#00ffcc] w-48 md:w-64"
           />
-
-          <Button
-            onClick={fetchRecords}
-            className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
-          >
-            New Client
-          </Button>
+          <Create pageTitle={PAGE_TITLE} onSuccess={() => fetchRecords(search)} />
         </div>
       </div>
 
       <DataTable
-        columns={Columns}
+        columns={columns}
         data={employees}
         isLoading={isLoading}
         error={error}

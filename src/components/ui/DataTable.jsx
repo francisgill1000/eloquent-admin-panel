@@ -1,8 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-
-import CustomLoader from '@/components/ui/AIPlaceholderLoader';
+import CustomLoader from "./AIPlaceholderLoader";
 
 export default function DataTable({
   columns = [],
@@ -16,10 +15,7 @@ export default function DataTable({
 
   return (
 
-    <div className=" rounded-xl shadow-lg overflow-hidden border border-gray-200 min-h-[800px] max-h-[400px] flex flex-col">
-
-      {isLoading && <CustomLoader />}
-
+    <div className=" rounded-xl shadow-lg overflow-hidden border border-gray-200  flex flex-col">
       {/* Table wrapper */}
       <div className="overflow-x-auto overflow-y-auto flex-1 scrollbar-custom">
         <table className="w-full text-left table-auto">
@@ -36,22 +32,23 @@ export default function DataTable({
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="divide-y divide-gray-800 bg-[#121212]">
             {isLoading ? (
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-12 text-center text-primary font-medium"
+                  className="p-12 text-center text-primary font-medium bg-[#121212]"
                 >
-                  <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
-                  Loading data...
+                  <div className="flex items-center justify-center h-[60vh]">
+                    <CustomLoader />
+                  </div>
                 </td>
               </tr>
             ) : error ? (
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-12 text-center text-red-600 font-medium "
+                  className="p-12 text-center text-red-400 font-medium bg-[#121212]"
                 >
                   <p>Error: {error}</p>
                   <p className="mt-2 text-sm text-red-500">
@@ -63,7 +60,7 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-12 text-center text-gray-500 font-medium"
+                  className="p-12 text-center text-gray-500 font-medium bg-[#121212] "
                 >
                   {emptyMessage}
                 </td>
@@ -72,13 +69,13 @@ export default function DataTable({
               data.map((item, i) => (
                 <tr
                   key={i}
-                  className="border-b border-gray-200 hover:text-muted transition-colors cursor-pointer"
+                  className="border-y border-[#00ffcc1a] hover:bg-[#1f1f1f] transition-colors cursor-pointer bg-[#1b1b1b]"
                   onClick={() => onRowClick(item)}
                 >
                   {columns.map((col, j) => (
                     <td
                       key={j}
-                      className="p-4 text-sm text-muted-foreground whitespace-nowrap"
+                      className="p-4 text-sm text-gray-300 whitespace-nowrap"
                     >
                       {col.render ? col.render(item) : item[col.key] || "—"}
                     </td>

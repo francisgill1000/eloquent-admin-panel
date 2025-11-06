@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export default function AIPlaceholderLoader({ text = "Analyzing data..." }) {
+export default function CustomLoader({ text = "Analyzing data..." }) {
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-4">
       <div className="flex space-x-2">
