@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://192.168.56.1:8000/api";
+// export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://192.168.56.1:8000/api";
+export const API_BASE = "http://192.168.56.1:8000/api";
 
 console.log("🚀 ~ API_BASE:", API_BASE)
 

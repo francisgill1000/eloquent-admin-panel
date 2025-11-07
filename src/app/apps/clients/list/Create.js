@@ -14,6 +14,7 @@ import {
 import DropDown from "@/components/ui/DropDown";
 
 import { parseApiError } from "@/lib/utils";
+import { countries, cities } from "@/lib/dropdowns";
 // import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
@@ -21,7 +22,11 @@ let defaultPayload = {
     whatsapp: "",
     phone: "",
     email: "",
+    country: "",
+    city: ""
 };
+
+
 
 const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
 
@@ -79,7 +84,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                         <DialogTitle>New {pageTitle}</DialogTitle>
                         <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${pageTitle} — just speak or type the details.`}</p>
                     </DialogHeader>
-                    
+
                     <div className="space-y-4">
                         <div>
                             <label className="block text-xs font-medium mb-1">Name</label>
@@ -111,6 +116,28 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                                 value={form.email}
                                 onChange={(e) => handleChange("email", e.target.value)}
                             />
+                        </div>
+                        <div className="flex gap-5">
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Country</label>
+                                <DropDown
+                                    items={countries}
+                                    value={form.country}
+                                    onChange={(e) => handleChange("country", e)} />
+
+                            </div>
+
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">City</label>
+                                <DropDown
+                                    items={cities}
+                                    value={form.city}
+                                    onChange={(e) => handleChange("city", e)} />
+
+                            </div>
+                        </div>
+                        <div>
+
                         </div>
                     </div>
 

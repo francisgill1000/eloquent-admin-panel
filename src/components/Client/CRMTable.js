@@ -1,43 +1,79 @@
 "use client";
 
+import { parseApiError } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import CustomLoader from "../ui/AIPlaceholderLoader";
+
 const CRMTable = () => {
-  // Example CRM data
-  const crmData = [
-    { id: 1, leadName: "John Doe", status: "New", assignedTo: "Alice", value: "$1,200", date: "2025-11-01" },
-    { id: 2, leadName: "Jane Smith", status: "Contacted", assignedTo: "Bob", value: "$3,400", date: "2025-11-02" },
-    { id: 3, leadName: "Michael Brown", status: "Qualified", assignedTo: "Charlie", value: "$2,800", date: "2025-11-03" },
-    { id: 4, leadName: "Emily Johnson", status: "Won", assignedTo: "Alice", value: "$5,000", date: "2025-11-04" },
-    { id: 5, leadName: "William Lee", status: "Lost", assignedTo: "Bob", value: "$0", date: "2025-11-05" },
-  ];
+
+  const [records, setRecords] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch function (search passed explicitly)
+  const fetchRecords = async () => {
+    try {
+      setIsLoading(true);
+
+      const params = { page: 1, per_page: 10 };
+      const { data } = await axios.get("customers", { params });
+
+      if (data && Array.isArray(data.data)) {
+        setRecords(data.data);
+      } else {
+        throw new Error("Invalid data structure received from API.");
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(parseApiError(error));
+      setIsLoading(false);
+    }
+  };
+
+  // Trigger fetch on search change
+  useEffect(() => {
+    fetchRecords();
+  }, []);
 
   return (
-     <table className="min-w-full text-left text-sm text-[#9bead8]">
-        <thead>
+
+    <div className="max-h-[300px] scrollbar-custom overflow-y-auto rounded-md">
+      <table className="min-w-full text-left text-sm text-[#9bead8]">
+        <thead className="sticky top-0 bg-[#121212] z-10">
           <tr className="border-b border-[#00ffcc33]">
-            <th className="px-4 py-2">Lead Name</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Assigned To</th>
-            <th className="px-4 py-2">Value</th>
-            <th className="px-4 py-2">Date</th>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Whatsapp</th>
           </tr>
         </thead>
+
         <tbody>
-          {crmData.map((item, index) => (
-            <tr
-              key={item.id}
-              className={`border-b border-[#00ffcc11] hover:bg-[#00ffcc1a] transition-colors ${
-                index % 2 === 0 ? "bg-[#1a1a1a]" : "bg-[#141414]"
-              }`}
-            >
-              <td className="px-4 py-2">{item.leadName}</td>
-              <td className="px-4 py-2">{item.status}</td>
-              <td className="px-4 py-2">{item.assignedTo}</td>
-              <td className="px-4 py-2">{item.value}</td>
-              <td className="px-4 py-2">{item.date}</td>
+          {isLoading ? (
+            <tr>
+              <td
+                colSpan={2}
+                className="p-12 text-center text-primary font-medium bg-[#121212]"
+              >
+                <div className="flex items-center justify-center">
+                  <CustomLoader />
+                </div>
+              </td>
             </tr>
-          ))}
+          ) : (
+            records.map((item, index) => (
+              <tr
+                key={item.id}
+                className={`border-b border-[#00ffcc11] hover:bg-[#00ffcc1a] transition-colors ${index % 2 === 0 ? "bg-[#1a1a1a]" : "bg-[#141414]"
+                  }`}
+              >
+                <td className="px-4 py-2">{item.name}</td>
+                <td className="px-4 py-2">{item.whatsapp}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
+    </div>
+
   );
 };
 

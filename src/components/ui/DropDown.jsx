@@ -33,13 +33,13 @@ export default function DropDown({
   const itemName = items.find((b) => b.id === value)?.name || placeholder;
 
   return (
-    <Popover open={itemOpen} onOpenChange={setItemOpen}>
+    <Popover open={itemOpen} onOpenChange={setItemOpen} >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={itemOpen}
-          className="w-full justify-between text-gray-500 border border-gray-300 rounded-lg bg-white hover:bg-gray-100"
+          className="w-full justify-between hover:text-white border border-gray-300 rounded-lg bg-primary hover:bg-muted/10"
         >
           {itemName}
           {/* <span className="material-icons text-gray-400 ml-2 text-base">
@@ -49,8 +49,8 @@ export default function DropDown({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[300px] max-w-full p-0">
-        <Command>
+      <PopoverContent className="w-[300px] max-w-full p-0 ">
+        <Command className={'bg-primary text-white'}>
           <CommandInput placeholder="Search item..." />
           <CommandEmpty>No item found.</CommandEmpty>
           <CommandGroup>
@@ -58,7 +58,7 @@ export default function DropDown({
               <CommandItem
                 key={item.id}
                 value={item.name}
-                className="text-gray-600"
+                className="text-white/50"
                 onSelect={handleSelect}
               >
                 {item.name}

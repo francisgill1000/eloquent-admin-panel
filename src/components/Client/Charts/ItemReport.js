@@ -8,48 +8,69 @@ import {
     ResponsiveContainer,
     XAxis,
     YAxis,
+    Tooltip,
 } from "recharts";
 
-// Function to generate a random number between min and max
-const getRandomSales = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-// Function to generate new bar data
-const generateBarData = () => [
-    { name: "Jan", sales: getRandomSales(1000, 10000) },
-    { name: "Feb", sales: getRandomSales(1000, 10000) },
-    { name: "Mar", sales: getRandomSales(1000, 10000) },
-    { name: "Apr", sales: getRandomSales(1000, 10000) },
-    { name: "May", sales: getRandomSales(1000, 10000) },
-    { name: "Jun", sales: getRandomSales(1000, 10000) },
-    { name: "Jul", sales: getRandomSales(1000, 10000) },
-    { name: "Aug", sales: getRandomSales(1000, 10000) },
-    { name: "Sep", sales: getRandomSales(1000, 10000) },
-    { name: "Oct", sales: getRandomSales(1000, 10000) },
-    { name: "Nov", sales: getRandomSales(1000, 10000) },
-    { name: "Dec", sales: getRandomSales(1000, 10000) },
-];
-
 const ItemReport = () => {
+    const [barData, setBarData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [barData, setBarData] = useState(generateBarData());
+    // ✅ Fetch month-wise customer stats from backend
+    const fetchCustomerStats = async () => {
+        try {
+            setLoading(true);
+            const { data } = await axios.get("customers-stats");
+
+            // Expected backend response:
+            // [{ month: "January", total: 10 }, { month: "February", total: 7 }, ...]
+
+            // Map data for recharts
+            const formatted = data.map((item) => ({
+                name: item.month.slice(0, 3), // e.g. "Jan"
+                sales: item.total,
+            }));
+
+            setBarData(formatted);
+        } catch (error) {
+            console.error("Failed to fetch customer stats:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setBarData(generateBarData()); // regenerate data every 3 seconds
-        }, 3000);
-
-        return () => clearInterval(interval); // cleanup on unmount
+        fetchCustomerStats();
     }, []);
 
     return (
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={barData} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="name" stroke="#fff" />
-                <YAxis stroke="#fff" />
-                <Bar dataKey="sales" fill="#00ffcc" radius={[8, 8, 0, 0]} />
-            </BarChart>
-        </ResponsiveContainer>
+        <div className="w-full  p-4 rounded-xl ">
+            {loading ? (
+                <p className="text-gray-400 text-sm">Loading chart...</p>
+            ) : (
+                <ResponsiveContainer width="100%" height={280}>
+                    <BarChart
+                        data={barData}
+                        margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
+                    >
+                        <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="rgba(255,255,255,0.04)"
+                        />
+                        <XAxis dataKey="name" stroke="#fff" />
+                        <YAxis stroke="#fff" />
+                        <Tooltip
+                            cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                            contentStyle={{
+                                backgroundColor: "#1a1a1a",
+                                border: "1px solid #00ffcc1a",
+                                borderRadius: "8px",
+                            }}
+                        />
+                        <Bar dataKey="sales" fill="#00ffcc" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                </ResponsiveContainer>
+            )}
+        </div>
     );
 };
 

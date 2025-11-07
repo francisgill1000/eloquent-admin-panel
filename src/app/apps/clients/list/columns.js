@@ -130,6 +130,28 @@ export default function Columns({ pageTitle, onSuccess = (e) => { e } } = {}) {
             ),
         },
         {
+            key: "city",
+            header: "City",
+            render: (client) => {
+                const city = client.city || "-";
+                const country = client.country || "-";
+
+                // If both are "-", just show "-"
+                const displayText = city === "-" && country === "-" ? "-" : `${city}${country !== "-" ? `, ${country}` : ""}`;
+
+                return (
+                    <div
+                        role="button"
+                        onClick={() => handleRowClick(client.id)}
+                        className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded px-2 py-1 transition-colors ${displayText === "-" ? "cursor-default hover:bg-transparent" : ""}`}
+                        title={displayText !== "-" ? displayText : undefined}
+                    >
+                        <p className="font-medium truncate">{displayText?.split("_")[1] || "-"}</p>
+                    </div>
+                );
+            },
+        },
+        {
             key: "options",
             header: "Options",
             render: (admin) => (

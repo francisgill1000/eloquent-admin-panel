@@ -14,11 +14,11 @@ import {
 import DropDown from "@/components/ui/DropDown";
 
 import { parseApiError } from "@/lib/utils";
+import { countries, cities } from "@/lib/dropdowns";
+
 // import MultiDropDown from "../ui/MultiDropDown";
 
-
-
-const Create = ({
+const Edit = ({
     pageTitle = "Item",
     onSuccess = (e) => { e },
     initialData = {},
@@ -104,6 +104,26 @@ const Create = ({
                                 onChange={(e) => handleChange("email", e.target.value)}
                             />
                         </div>
+
+                        <div className="flex gap-5">
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Country</label>
+                                <DropDown
+                                    items={countries}
+                                    value={form.country}
+                                    onChange={(e) => handleChange("country", e)} />
+
+                            </div>
+
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">City</label>
+                                <DropDown
+                                    items={cities}
+                                    value={form.city}
+                                    onChange={(e) => handleChange("city", e)} />
+
+                            </div>
+                        </div>
                     </div>
 
                     {globalError && (
@@ -121,7 +141,7 @@ const Create = ({
                             disabled={loading}
                             className="bg-muted/50 text-white"
                         >
-                            {loading ? "Saving..." : `Create ${pageTitle}`}
+                            {loading ? "Saving..." : `Save ${pageTitle}`}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -130,4 +150,4 @@ const Create = ({
     );
 };
 
-export default Create;
+export default Edit;
