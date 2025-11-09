@@ -15,22 +15,23 @@ import DropDown from "@/components/ui/DropDown";
 
 import { parseApiError } from "@/lib/utils";
 import { countries, cities } from "@/lib/dropdowns";
+
 // import MultiDropDown from "../ui/MultiDropDown";
 
-let defaultPayload = {
-    name: "",
-    whatsapp: "",
-    phone: "",
-    email: "",
-    country: "",
-    city: ""
-};
+const Edit = ({
+    endpoint,
+    pageTitle = "Item",
+    onSuccess = (e) => { e },
+    initialData = {},
+    controlledOpen,
+    controlledSetOpen,
+}) => {
 
-
-
-const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
-
+    const isControlled = controlledOpen !== undefined;
     const [open, setOpen] = useState(false);
+    const actualOpen = isControlled ? controlledOpen : open;
+    const actualSetOpen = isControlled ? controlledSetOpen : setOpen;
+
     const [globalError, setGlobalError] = useState(null);
     const [departments, setDepartments] = useState([]);
 
@@ -38,13 +39,8 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [form, setForm] = useState(defaultPayload);
+    const [form, setForm] = useState(initialData);
 
-    useEffect(() => {
-        if (open) {
-            setForm(defaultPayload);
-        }
-    }, [open]);
 
     const handleChange = (field, value) => {
         setForm((prev) => ({ ...prev, [field]: value }));
@@ -55,7 +51,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
         setLoading(true);
         try {
 
-            let r = await axios.post(`customers`, form);
+            let r = await axios.put(`${endpoint}/${form.id}`, form);
 
             await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -63,7 +59,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
             onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
             setOpen(false);
         } catch (error) {
-            setGlobalError((error?.response?.data));
+            setGlobalError((error?.response?.data?.message));
         } finally {
             setLoading(false);
         }
@@ -71,18 +67,10 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
 
     return (
         <>
-            <Button
-                onClick={() => setOpen(true)}
-                className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
-            >
-                New {pageTitle}
-            </Button>
-
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={actualOpen} onOpenChange={actualSetOpen}>
                 <DialogContent className="max-w-lg bg-primary text-muted">
                     <DialogHeader>
-                        <DialogTitle>New {pageTitle}</DialogTitle>
-                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${pageTitle} — just speak or type the details.`}</p>
+                        <DialogTitle>Edit  {pageTitle}</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
@@ -94,22 +82,6 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Whatsapp e.g (971501234567)</label>
-                            <Input
-                                value={form.whatsapp}
-                                onChange={(e) => handleChange("whatsapp", e.target.value)}
-                                placeholder="971501234567"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Phone  e.g (971501234567)</label>
-                            <Input
-                                value={form.phone}
-                                onChange={(e) => handleChange("phone", e.target.value)}
-                                placeholder="971501234567"
-                            />
-                        </div>
-                        <div>
                             <label className="block text-xs font-medium mb-1">Email</label>
                             <Input
                                 type={'email'}
@@ -117,27 +89,25 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                                 onChange={(e) => handleChange("email", e.target.value)}
                             />
                         </div>
+
                         <div className="flex gap-5">
                             <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">Country</label>
-                                <DropDown
-                                    items={countries}
-                                    value={form.country}
-                                    onChange={(e) => handleChange("country", e)} />
-
+                                <label className="text-xs font-medium mb-1">Password</label>
+                                <Input
+                                    value={form.password}
+                                    onChange={(e) => handleChange("password", e.target.value)}
+                                />
                             </div>
-
                             <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">City</label>
-                                <DropDown
-                                    items={cities}
-                                    value={form.city}
-                                    onChange={(e) => handleChange("city", e)} />
-
+                                <label className="text-xs font-medium mb-1">Password Confirmation</label>
+                                <Input
+                                    value={form.password_confirmation}
+                                    onChange={(e) => handleChange("password_confirmation", e.target.value)}
+                                />
                             </div>
                         </div>
-                        <div>
-                        </div>
+
+
                     </div>
 
                     {globalError && (
@@ -155,7 +125,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                             disabled={loading}
                             className="bg-muted/50 text-white"
                         >
-                            {loading ? "Saving..." : `Create ${pageTitle}`}
+                            {loading ? "Saving..." : `Save ${pageTitle}`}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -164,4 +134,4 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
     );
 };
 
-export default Create;
+export default Edit;

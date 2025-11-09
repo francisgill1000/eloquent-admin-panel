@@ -13,29 +13,26 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
+
 import { parseApiError } from "@/lib/utils";
 import { countries, cities } from "@/lib/dropdowns";
 // import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
-    name: "",
-    whatsapp: "",
-    phone: "",
-    email: "",
-    country: "",
-    city: ""
+    customer_id: "",
+    agent_id: "",
+    source: "",
+    status: "",
 };
 
-
-
-const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
+const Create = ({ options, onSuccess = (e) => { e } }) => {
 
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
     const [departments, setDepartments] = useState([]);
 
-    const [branches, setBranches] = useState([]);
-    const [roles, setRoles] = useState([]);
+    const [customers, setCustomers] = useState([]);
+    const [agents, setAgents] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState(defaultPayload);
@@ -50,24 +47,55 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
         setForm((prev) => ({ ...prev, [field]: value }));
     };
 
+    const fetchDropdowns = async () => {
+        setLoading(true)
+        try {
+
+            let customers = await axios.get(`user-list`, {
+                params: { user_type: "customer" }
+            });
+
+            let agents = await axios.get(`user-list`, {
+                params: { user_type: "agent" }
+            });
+
+            setCustomers(customers.data);
+            setAgents(agents.data);
+
+
+        } catch (error) {
+            setGlobalError((error?.response?.data?.message));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDropdowns();
+    }, []);
+
+
     const onSubmit = async () => {
         setGlobalError(null);
         setLoading(true);
         try {
 
-            let r = await axios.post(`customers`, form);
+            let r = await axios.post(options.endpoint, form);
 
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             // inform to parent component
-            onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
+            onSuccess({ title: `${options.page_title} Save`, description: `${options.page_title} Save successfully` });
             setOpen(false);
         } catch (error) {
-            setGlobalError((error?.response?.data));
+            setGlobalError((error?.response?.data?.message));
         } finally {
             setLoading(false);
         }
     };
+
+
+    if (loading) return;
 
     return (
         <>
@@ -75,68 +103,51 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                 onClick={() => setOpen(true)}
                 className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
             >
-                New {pageTitle}
+                New {options.page_title}
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-lg bg-primary text-muted">
                     <DialogHeader>
-                        <DialogTitle>New {pageTitle}</DialogTitle>
-                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${pageTitle} — just speak or type the details.`}</p>
+                        <DialogTitle>New {options.page_title}</DialogTitle>
+                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${options.page_title} — just speak or type the details.`}</p>
                     </DialogHeader>
 
                     <div className="space-y-4">
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Name</label>
-                            <Input
-                                value={form.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Whatsapp e.g (971501234567)</label>
-                            <Input
-                                value={form.whatsapp}
-                                onChange={(e) => handleChange("whatsapp", e.target.value)}
-                                placeholder="971501234567"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Phone  e.g (971501234567)</label>
-                            <Input
-                                value={form.phone}
-                                onChange={(e) => handleChange("phone", e.target.value)}
-                                placeholder="971501234567"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Email</label>
-                            <Input
-                                type={'email'}
-                                value={form.email}
-                                onChange={(e) => handleChange("email", e.target.value)}
-                            />
-                        </div>
-                        <div className="flex gap-5">
-                            <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">Country</label>
-                                <DropDown
-                                    items={countries}
-                                    value={form.country}
-                                    onChange={(e) => handleChange("country", e)} />
 
-                            </div>
-
-                            <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">City</label>
-                                <DropDown
-                                    items={cities}
-                                    value={form.city}
-                                    onChange={(e) => handleChange("city", e)} />
-
-                            </div>
-                        </div>
                         <div>
+                            <label className="block text-xs font-medium mb-1">Agent</label>
+
+                            <DropDown
+                                items={agents}
+                                value={form.agent_id}
+                                onChange={(e) => handleChange("agent_id", e)} />
+
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1">Customer</label>
+                            <DropDown
+                                items={customers}
+                                value={form.customer_id}
+                                onChange={(e) => handleChange("customer_id", e)} />
+
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1">Source</label>
+                            <Input
+                                value={form.source}
+                                onChange={(e) => handleChange("source", e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1">Status</label>
+                            <Input
+                                value={form.status}
+                                onChange={(e) => handleChange("status", e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -155,7 +166,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                             disabled={loading}
                             className="bg-muted/50 text-white"
                         >
-                            {loading ? "Saving..." : `Create ${pageTitle}`}
+                            {loading ? "Saving..." : `Create ${options.page_title}`}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

@@ -13,22 +13,25 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
+
 import { parseApiError } from "@/lib/utils";
 import { countries, cities } from "@/lib/dropdowns";
 // import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
     name: "",
-    whatsapp: "",
-    phone: "",
     email: "",
+    passowd: "",
+    password_confirmation: "",
+
+    phone: "",
+    whatsapp: "",
     country: "",
-    city: ""
+    city: "",
+
 };
 
-
-
-const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
+const Create = ({ options, onSuccess = (e) => { e } }) => {
 
     const [open, setOpen] = useState(false);
     const [globalError, setGlobalError] = useState(null);
@@ -55,15 +58,15 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
         setLoading(true);
         try {
 
-            let r = await axios.post(`customers`, form);
+            let r = await axios.post(options.endpoint, { ...form, user_type: options.user_type });
 
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             // inform to parent component
-            onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
+            onSuccess({ title: `${options.page_title} Save`, description: `${options.page_title} Save successfully` });
             setOpen(false);
         } catch (error) {
-            setGlobalError((error?.response?.data));
+            setGlobalError((error?.response?.data?.message));
         } finally {
             setLoading(false);
         }
@@ -75,14 +78,14 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                 onClick={() => setOpen(true)}
                 className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
             >
-                New {pageTitle}
+                New {options.page_title}
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-lg bg-primary text-muted">
                     <DialogHeader>
-                        <DialogTitle>New {pageTitle}</DialogTitle>
-                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${pageTitle} — just speak or type the details.`}</p>
+                        <DialogTitle>New {options.page_title}</DialogTitle>
+                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${options.page_title} — just speak or type the details.`}</p>
                     </DialogHeader>
 
                     <div className="space-y-4">
@@ -93,30 +96,24 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                                 onChange={(e) => handleChange("name", e.target.value)}
                             />
                         </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Whatsapp e.g (971501234567)</label>
-                            <Input
-                                value={form.whatsapp}
-                                onChange={(e) => handleChange("whatsapp", e.target.value)}
-                                placeholder="971501234567"
-                            />
+
+                        <div className="flex gap-5">
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Whatsapp e.g (971501234567)</label>
+                                <Input
+                                    value={form.whatsapp}
+                                    onChange={(e) => handleChange("whatsapp", e.target.value)}
+                                />
+                            </div>
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Phone  e.g (971501234567)</label>
+                                <Input
+                                    value={form.phone}
+                                    onChange={(e) => handleChange("phone", e.target.value)}
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Phone  e.g (971501234567)</label>
-                            <Input
-                                value={form.phone}
-                                onChange={(e) => handleChange("phone", e.target.value)}
-                                placeholder="971501234567"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Email</label>
-                            <Input
-                                type={'email'}
-                                value={form.email}
-                                onChange={(e) => handleChange("email", e.target.value)}
-                            />
-                        </div>
+
                         <div className="flex gap-5">
                             <div className="w-full ">
                                 <label className="text-xs font-medium mb-1">Country</label>
@@ -136,7 +133,41 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
 
                             </div>
                         </div>
-                        <div>
+
+
+                        <div className="pb-15">
+                            <label className="block text-xs font-medium mb-1">Email</label>
+                            <Input
+                                type={'email'}
+                                value={form.email}
+                                onChange={(e) => handleChange("email", e.target.value)}
+                            />
+                        </div>
+
+
+                        <div className=" text-sm text-primary foreground italic">
+                            -----
+                        </div>
+                        <div className="pt-15 text-sm text-muted-foreground italic">
+                            Fill the fields if you need to login access with their email and password
+                        </div>
+
+                        <div className="flex gap-5">
+
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Password</label>
+                                <Input
+                                    value={form.password}
+                                    onChange={(e) => handleChange("password", e.target.value)}
+                                />
+                            </div>
+                            <div className="w-full ">
+                                <label className="text-xs font-medium mb-1">Password Confirmation</label>
+                                <Input
+                                    value={form.password_confirmation}
+                                    onChange={(e) => handleChange("password_confirmation", e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -155,7 +186,7 @@ const Create = ({ pageTitle = "Item", onSuccess = (e) => { e } }) => {
                             disabled={loading}
                             className="bg-muted/50 text-white"
                         >
-                            {loading ? "Saving..." : `Create ${pageTitle}`}
+                            {loading ? "Saving..." : `Create ${options.page_title}`}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

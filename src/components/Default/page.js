@@ -17,7 +17,7 @@ import {
 
 // Default apps data
 const defaultApps = [
-  { name: "Invoice", description: "Create and send invoices easily", icon: <Receipt size={28} className="text-accent" />, link: "/apps/invoice" },
+  // { name: "Invoice", description: "Create and send invoices easily", icon: <Receipt size={28} className="text-accent" />, link: "/apps/invoice" },
   { name: "Clients", description: "Create and manage clients", icon: <ShoppingCart size={28} className="text-accent" />, link: "/apps/clients" },
   { name: "Sales", description: "Track and manage your sales pipeline", icon: <ShoppingCart size={28} className="text-accent" />, link: "/apps/sales" },
   { name: "Proposal", description: "Prepare and manage client proposals", icon: <FileSignature size={28} className="text-accent" />, link: "/apps/proposal" },

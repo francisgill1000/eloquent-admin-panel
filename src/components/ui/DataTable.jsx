@@ -1,11 +1,10 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import CustomLoader from "./AIPlaceholderLoader";
 
 export default function DataTable({
-  columns = [],
   data = [],
+  columns = [],
   isLoading = false,
   error = null,
   emptyMessage = "No data found.",
@@ -17,7 +16,7 @@ export default function DataTable({
 
     <div className=" rounded-xl shadow-lg overflow-hidden border border-gray-200  flex flex-col">
       {/* Table wrapper */}
-      <div className="overflow-x-auto overflow-y-auto flex-1 scrollbar-custom">
+      <div className="overflow-x-auto overflow-y-auto min-h-[70vh] flex-1 scrollbar-custom">
         <table className="w-full text-left table-auto">
           <thead className="bg-[#1b1b1b] border-b border-gray-200 sticky top-0 z-10">
             <tr>
@@ -37,7 +36,7 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-12 text-center text-primary font-medium bg-[#121212]"
+                  className="p-12 text-center justify-center text-primary font-medium bg-[#121212]"
                 >
                   <div className="flex items-center justify-center h-[60vh]">
                     <CustomLoader />
@@ -60,9 +59,11 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="p-12 text-center text-gray-500 font-medium bg-[#121212] "
+                  className=""
                 >
-                  {emptyMessage}
+                  <div className="flex items-center justify-center min-h-[62vh] w-full">
+                    {emptyMessage}
+                  </div>
                 </td>
               </tr>
             ) : (

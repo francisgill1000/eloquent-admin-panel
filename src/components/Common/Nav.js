@@ -24,6 +24,12 @@ import {
   AppWindow,
   Menu,
   ChartArea,
+  Users2Icon,
+  TentIcon,
+  UserIcon,
+  CircleQuestionMark,
+  User2,
+  Building,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,13 +47,15 @@ const menus = {
     { name: "Dashboard", href: "/apps/clients", icon: <ChartArea size={20} /> },
     { name: "Clients", href: "/apps/clients/list", icon: <AppWindow size={20} /> },
   ],
-  crm: [
+  sales: [
     { name: "Home", href: "/", icon: <Home size={20} /> },
     { name: "Dashboard", href: "/apps/crm", icon: <AppWindow size={20} /> },
-    { name: "Leads", href: "/apps/crm/leads", icon: <Users size={20} /> },
-    { name: "Deals", href: "/apps/crm/deals", icon: <BarChart2 size={20} /> },
-    { name: "Messages", href: "/apps/crm/messages", icon: <MessageSquare size={20} /> },
-    { name: "Settings", href: "/apps/crm/settings", icon: <Settings size={20} /> },
+    { name: "Agents", href: "/apps/sales/agents", icon: <UserIcon size={20} /> },
+    { name: "Customers", href: "/apps/sales/customers", icon: <UserIcon size={20} /> },
+    { name: "Leads", href: "/apps/sales/leads", icon: <Banknote size={20} /> },
+    { name: "Deals", href: "/apps/sales/deals", icon: <BarChart2 size={20} /> },
+    { name: "Messages", href: "/apps/sales/messages", icon: <MessageSquare size={20} /> },
+    { name: "Settings", href: "/apps/sales/settings", icon: <Settings size={20} /> },
   ],
   invoice: [
     { name: "Home", href: "/", icon: <Home size={20} /> },
