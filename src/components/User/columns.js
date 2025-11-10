@@ -95,53 +95,76 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
         //     ),
         // },
         {
-            key: "customer_id",
-            header: "customer_id",
+            key: "name",
+            header: "Name",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
                     className="flex items-center space-x-3 cursor-pointer"
                 >
-                    <p className="font-medium">{client.customer_id}</p>
+                    <p className="font-medium">{client.name}</p>
                 </div>
             ),
         },
         {
-            key: "agent_id",
-            header: "agent_id",
+            key: "email",
+            header: "email",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
                     className="flex items-center space-x-3 cursor-pointer"
                 >
-                    <p className="font-medium">{client.agent_id}</p>
+                    <p className="font-medium">{client.email}</p>
                 </div>
             ),
         },
         {
-            key: "source",
-            header: "source",
+            key: "phone",
+            header: "phone",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
                     className="flex items-center space-x-3 cursor-pointer"
                 >
-                    <p className="font-medium">{client.source}</p>
+                    <p className="font-medium">{client.phone || "-"}</p>
                 </div>
             ),
         },
         {
-            key: "status",
-            header: "status",
+            key: "whatsapp",
+            header: "whatsapp",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
                     className="flex items-center space-x-3 cursor-pointer"
                 >
-                    <p className="font-medium">{client.status}</p>
+                    <p className="font-medium">{client.whatsapp || "-"}</p>
                 </div>
             ),
         },
+            {
+            key: "address",
+            header: "Address",
+            render: (client) => {
+                const city = client.city || "-";
+                const country = client.country || "-";
+
+                // If both are "-", just show "-"
+                const displayText = city === "-" && country === "-" ? "-" : `${city}${country !== "-" ? `, ${country}` : ""}`;
+
+                return (
+                    <div
+                        role="button"
+                        onClick={() => handleRowClick(client.id)}
+                        className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded px-2 py-1 transition-colors ${displayText === "-" ? "cursor-default hover:bg-transparent" : ""}`}
+                        title={displayText !== "-" ? displayText : undefined}
+                    >
+                        <p className="font-medium truncate">{displayText?.split("_")[1] || "-"}</p>
+                    </div>
+                );
+            },
+        },
+      
         {
             key: "options",
             header: "Options",

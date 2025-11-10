@@ -39,21 +39,35 @@ const Edit = ({
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [form, setForm] = useState(initialData);
-
+    const [form, setForm] = useState({});
 
     const handleChange = (field, value) => {
         setForm((prev) => ({ ...prev, [field]: value }));
     };
+
+    const sendWhatsApp = (phone, note) => {
+        if (!phone) {
+            alert("Lead phone number not available");
+            return;
+        }
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(note)}`;
+        window.open(url, "_blank");
+    };
+
 
     const onSubmit = async () => {
         setGlobalError(null);
         setLoading(true);
         try {
 
-            let r = await axios.put(`${endpoint}/${form.id}`, form);
+            let payload = { note: form.note, lead_id: initialData.id };
+
+
+            let r = await axios.post(`leads-activities`, payload);
 
             await new Promise(resolve => setTimeout(resolve, 2000));
+
+            sendWhatsApp(`971554501483`, form.note);
 
             // inform to parent component
             onSuccess({ title: `${pageTitle} Save`, description: `${pageTitle} Save successfully` });
@@ -70,44 +84,17 @@ const Edit = ({
             <Dialog open={actualOpen} onOpenChange={actualSetOpen}>
                 <DialogContent className="max-w-lg bg-primary text-muted">
                     <DialogHeader>
-                        <DialogTitle>Edit  {pageTitle}</DialogTitle>
+                        <DialogTitle>Add Activity</DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-xs font-medium mb-1">Name</label>
+                            <label className="block text-xs font-medium mb-1">Notes</label>
                             <Input
-                                value={form.name}
-                                onChange={(e) => handleChange("name", e.target.value)}
+                                value={form.note}
+                                onChange={(e) => handleChange("note", e.target.value)}
                             />
                         </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Email</label>
-                            <Input
-                                type={'email'}
-                                value={form.email}
-                                onChange={(e) => handleChange("email", e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex gap-5">
-                            <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">Password</label>
-                                <Input
-                                    value={form.password}
-                                    onChange={(e) => handleChange("password", e.target.value)}
-                                />
-                            </div>
-                            <div className="w-full ">
-                                <label className="text-xs font-medium mb-1">Password Confirmation</label>
-                                <Input
-                                    value={form.password_confirmation}
-                                    onChange={(e) => handleChange("password_confirmation", e.target.value)}
-                                />
-                            </div>
-                        </div>
-
-
                     </div>
 
                     {globalError && (

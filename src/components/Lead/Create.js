@@ -15,7 +15,7 @@ import DropDown from "@/components/ui/DropDown";
 
 
 import { parseApiError } from "@/lib/utils";
-import { countries, cities } from "@/lib/dropdowns";
+import { leads_status } from "@/lib/dropdowns";
 // import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
@@ -144,10 +144,10 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
 
                         <div>
                             <label className="block text-xs font-medium mb-1">Status</label>
-                            <Input
+                            <DropDown
+                                items={leads_status}
                                 value={form.status}
-                                onChange={(e) => handleChange("status", e.target.value)}
-                            />
+                                onChange={(e) => handleChange("status", e)} />
                         </div>
                     </div>
 

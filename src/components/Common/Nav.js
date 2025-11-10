@@ -54,8 +54,6 @@ const menus = {
     { name: "Customers", href: "/apps/sales/customers", icon: <UserIcon size={20} /> },
     { name: "Leads", href: "/apps/sales/leads", icon: <Banknote size={20} /> },
     { name: "Deals", href: "/apps/sales/deals", icon: <BarChart2 size={20} /> },
-    { name: "Messages", href: "/apps/sales/messages", icon: <MessageSquare size={20} /> },
-    { name: "Settings", href: "/apps/sales/settings", icon: <Settings size={20} /> },
   ],
   invoice: [
     { name: "Home", href: "/", icon: <Home size={20} /> },

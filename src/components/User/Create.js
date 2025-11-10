@@ -135,7 +135,7 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
                         </div>
 
 
-                        <div className="pb-15">
+                        <div className="">
                             <label className="block text-xs font-medium mb-1">Email</label>
                             <Input
                                 type={'email'}
@@ -145,10 +145,8 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
                         </div>
 
 
-                        <div className=" text-sm text-primary foreground italic">
-                            -----
-                        </div>
-                        <div className="pt-15 text-sm text-muted-foreground italic">
+                    
+                        <div className="pt-5 text-sm text-muted-foreground italic">
                             Fill the fields if you need to login access with their email and password
                         </div>
 

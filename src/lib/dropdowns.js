@@ -11,3 +11,11 @@ export const cities = [
     { id: "AE_RAK", name: "Ras Al Khaimah" },
     { id: "AE_UAQ", name: "Umm Al Quwain" }
 ];
+
+export const leads_status = [
+    { id: "New", name: "New" },
+    { id: "Contacted", name: "Contacted" },
+    { id: "In Progress", name: "In Progress" },
+    { id: "Closed-Won", name: "Closed-Won" },
+    { id: "Closed-Lost", name: "Closed-Lost" },
+];

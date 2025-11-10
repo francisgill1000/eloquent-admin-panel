@@ -3,20 +3,22 @@
 
 
 import { useState } from "react";
-import { MoreVertical, PenBox, Trash2 } from "lucide-react";
+import { Clock, MoreVertical, PenBox, Trash2 } from "lucide-react";
 
 import { parseApiError } from "@/lib/utils";
 
 import Edit from "./Edit";
+import Followups from "./Followups";
 
-function OptionsMenu({ endpoint, admin, pageTitle, onSuccess = (e) => { e } }) {
+
+function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
     const [openEdit, setOpenEdit] = useState(false);
 
     const onDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this item?");
         if (!confirmDelete) return; // exit if user cancels
         try {
-            await axios.delete(`${endpoint}/${admin.id}`);
+            await axios.delete(`${endpoint}/${item.id}`);
 
             onSuccess({ title: `${pageTitle} Deleted`, description: `${pageTitle} Deleted successfully` }); actualSetOpen(false);
             setOpenEdit(false); // close menu
@@ -40,13 +42,19 @@ function OptionsMenu({ endpoint, admin, pageTitle, onSuccess = (e) => { e } }) {
             {openEdit && (
                 <div className="absolute mt-2 w-24 bg-primary text-whtie border shadow-lg z-10">
                     <button
+                        onClick={() => setOpenEdit("followups")}
+                        className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
+                    >
+                        <Clock size={14} /> Folloups
+                    </button>
+                    <button
                         onClick={() => setOpenEdit("edit")}
                         className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
                     >
                         <PenBox size={14} /> Edit
                     </button>
                     <button
-                        onClick={() => onDelete(admin.id)}
+                        onClick={() => onDelete(item.id)}
                         className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
                     >
                         <Trash2 size={14} /> Delete
@@ -55,11 +63,22 @@ function OptionsMenu({ endpoint, admin, pageTitle, onSuccess = (e) => { e } }) {
             )}
 
             {/* 👇 Edit Dialog Integration */}
+            {openEdit === "followups" && (
+                <Followups
+                    endpoint={endpoint}
+                    pageTitle={pageTitle}
+                    initialData={item.activities}
+                    controlledOpen={true}
+                    controlledSetOpen={(val) => setOpenEdit(val ? "followups" : false)}
+                    onSuccess={handleSuccess}
+                />
+            )}
+
             {openEdit === "edit" && (
                 <Edit
                     endpoint={endpoint}
                     pageTitle={pageTitle}
-                    initialData={admin}
+                    initialData={item}
                     controlledOpen={true}
                     controlledSetOpen={(val) => setOpenEdit(val ? "edit" : false)}
                     onSuccess={handleSuccess}
@@ -122,8 +141,8 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
         {
             key: "options",
             header: "Options",
-            render: (admin) => (
-                <OptionsMenu endpoint={endpoint} pageTitle={pageTitle} admin={admin} onSuccess={onSuccess} />
+            render: (item) => (
+                <OptionsMenu endpoint={endpoint} pageTitle={pageTitle} item={item} onSuccess={onSuccess} />
             ),
         },
     ];
