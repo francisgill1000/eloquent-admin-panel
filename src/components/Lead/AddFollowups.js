@@ -1,0 +1,136 @@
+// @ts-nocheck
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
+import axios from "axios";
+import { parseApiError } from "@/lib/utils";
+
+const AddFollowups = ({
+  endpoint,
+  pageTitle = "Item",
+  onSuccess = (e) => e,
+  leadId = 0,
+}) => {
+  const [actualOpen, actualSetOpen] = useState(false);
+  const [globalError, setGlobalError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ note: "" });
+
+  const handleChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const sendWhatsApp = (phone, note) => {
+    if (!phone) return alert("Lead phone number not available");
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(note)}`;
+    window.open(url, "_blank");
+  };
+
+  const onSubmit = async () => {
+    setGlobalError(null);
+    setLoading(true);
+    try {
+      const payload = { note: form.note, lead_id: leadId };
+      await axios.post(`leads-activities`, payload);
+      await new Promise((r) => setTimeout(r, 1000));
+
+      // Optionally send WhatsApp message
+      // sendWhatsApp("971554501483", form.note);
+
+      onSuccess({
+        title: `${pageTitle} Saved`,
+        description: `${pageTitle} saved successfully.`,
+      });
+
+      actualSetOpen(false);
+      setForm({ note: "" });
+    } catch (error) {
+      setGlobalError(parseApiError(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Trigger Button */}
+      <Button
+        onClick={() => actualSetOpen(true)}
+        className="bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-2 rounded-lg shadow-sm transition-all"
+      >
+        + New Follow-up
+      </Button>
+
+      {/* Dialog */}
+      <Dialog open={actualOpen} onOpenChange={actualSetOpen}>
+        <DialogContent className="max-w-md bg-primary text-white rounded-2xl shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold tracking-wide">
+              Add Follow-up
+            </DialogTitle>
+          </DialogHeader>
+
+          {/* Form Fields */}
+          <div className="space-y-4 mt-3">
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-gray-300 mb-1">
+                Note
+              </label>
+              <Input
+                value={form.note}
+                onChange={(e) => handleChange("note", e.target.value)}
+                placeholder="Enter follow-up note..."
+                className=""
+              />
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {globalError && (
+            <div className="mt-3 bg-red-500/20 border border-red-400 text-red-100 rounded-md p-2 text-sm">
+              {globalError}
+            </div>
+          )}
+
+          {/* Footer */}
+          <DialogFooter className="mt-5 flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => actualSetOpen(false)}
+              className="bg-white/10 hover:bg-white/20 text-white"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              onClick={onSubmit}
+              disabled={loading || !form.note.trim()}
+              className="bg-muted/50 text-white px-5"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2 text-white">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </span>
+              ) : (
+                "Save"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export default AddFollowups;

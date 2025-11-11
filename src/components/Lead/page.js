@@ -47,7 +47,6 @@ export default function User({ options }) {
     }
   };
 
-
   // Trigger fetch on search change
   useEffect(() => {
     fetchRecords();

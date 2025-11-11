@@ -9,6 +9,7 @@ import { parseApiError } from "@/lib/utils";
 
 import Edit from "./Edit";
 import Followups from "./Followups";
+import AddFollowups from "./AddFollowups";
 
 
 function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
@@ -40,18 +41,12 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
             />
 
             {openEdit && (
-                <div className="absolute mt-2 w-24 bg-primary text-whtie border shadow-lg z-10">
+                <div className="absolute mt-2 w-36 bg-primary text-whtie border shadow-lg z-10">
                     <button
                         onClick={() => setOpenEdit("followups")}
                         className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
                     >
-                        <Clock size={14} /> Folloups
-                    </button>
-                    <button
-                        onClick={() => setOpenEdit("edit")}
-                        className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
-                    >
-                        <PenBox size={14} /> Edit
+                        <Clock size={14} /> Followups 
                     </button>
                     <button
                         onClick={() => onDelete(item.id)}
@@ -67,7 +62,7 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
                 <Followups
                     endpoint={endpoint}
                     pageTitle={pageTitle}
-                    initialData={item.activities}
+                    leadId={item.id}
                     controlledOpen={true}
                     controlledSetOpen={(val) => setOpenEdit(val ? "followups" : false)}
                     onSuccess={handleSuccess}
@@ -75,7 +70,7 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
             )}
 
             {openEdit === "edit" && (
-                <Edit
+                <AddFollowups
                     endpoint={endpoint}
                     pageTitle={pageTitle}
                     initialData={item}

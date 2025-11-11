@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import DropDown from "@/components/ui/DropDown";
 
+import UserCreate from "@/components/User/Create";
+
+
 
 import { parseApiError } from "@/lib/utils";
 import { leads_status } from "@/lib/dropdowns";
@@ -48,7 +51,6 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
     };
 
     const fetchDropdowns = async () => {
-        setLoading(true)
         try {
 
             let customers = await axios.get(`user-list`, {
@@ -99,6 +101,8 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
 
     return (
         <>
+
+
             <Button
                 onClick={() => setOpen(true)}
                 className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
@@ -118,19 +122,45 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
                         <div>
                             <label className="block text-xs font-medium mb-1">Agent</label>
 
-                            <DropDown
-                                items={agents}
-                                value={form.agent_id}
-                                onChange={(e) => handleChange("agent_id", e)} />
+                            <div className="flex gap-2 max-w-98">
+                                <DropDown
+                                    items={agents}
+                                    value={form.agent_id}
+                                    onChange={(e) => handleChange("agent_id", e)} />
+
+                                <UserCreate options={
+                                    {
+                                        endpoint: `users`,
+                                        user_type: `agent`,
+                                        page_title: ``
+                                    }
+                                } onSuccess={fetchDropdowns} />
+
+                            </div>
+
 
                         </div>
 
                         <div>
                             <label className="block text-xs font-medium mb-1">Customer</label>
-                            <DropDown
-                                items={customers}
-                                value={form.customer_id}
-                                onChange={(e) => handleChange("customer_id", e)} />
+
+                            <div className="flex gap-2 max-w-98">
+                                <DropDown
+                                    items={customers}
+                                    value={form.customer_id}
+                                    onChange={(e) => handleChange("customer_id", e)} />
+
+
+                                <UserCreate options={
+                                    {
+                                        endpoint: `users`,
+                                        user_type: `customer`,
+                                        page_title: ``
+                                    }
+                                }
+                                    onSuccess={fetchDropdowns} />
+                            </div>
+
 
                         </div>
 
