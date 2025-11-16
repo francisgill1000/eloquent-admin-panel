@@ -18,7 +18,7 @@ import UserCreate from "@/components/User/Create";
 
 
 import { parseApiError } from "@/lib/utils";
-import { leads_status } from "@/lib/dropdowns";
+import { leads_status, sources } from "@/lib/dropdowns";
 // import MultiDropDown from "../ui/MultiDropDown";
 
 let defaultPayload = {
@@ -105,7 +105,7 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
 
             <Button
                 onClick={() => setOpen(true)}
-                className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
+                className="text-white rounded-lg font-semibold shadow-md bg-muted/50 hover:bg-muted/70 transition-all"
             >
                 New {options.page_title}
             </Button>
@@ -166,10 +166,10 @@ const Create = ({ options, onSuccess = (e) => { e } }) => {
 
                         <div>
                             <label className="block text-xs font-medium mb-1">Source</label>
-                            <Input
+                            <DropDown
+                                items={sources}
                                 value={form.source}
-                                onChange={(e) => handleChange("source", e.target.value)}
-                            />
+                                onChange={(e) => handleChange("source", e)} />
                         </div>
 
                         <div>

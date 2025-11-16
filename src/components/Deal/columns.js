@@ -3,13 +3,10 @@
 
 
 import { useState } from "react";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { Clock, Handshake, MoreVertical, PenBox, Trash2 } from "lucide-react";
 
 import { parseApiError } from "@/lib/utils";
-
 import Followups from "./Followups";
-import AddDeal from "./AddDeal";
-
 
 function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
     const [openEdit, setOpenEdit] = useState(false);
@@ -41,16 +38,10 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
 
             {openEdit && (
                 <div className="absolute mt-2 w-50px bg-primary text-whtie border shadow-lg z-10">
-
-                    <AddDeal
-                        options={{ endpoint: `deals`, page_title: `Deal`, item: { ...item, lead_id: item.id } }}
-                        onSuccess={handleSuccess}
-                    />
                     <Followups
                         endpoint={endpoint}
                         pageTitle={pageTitle}
-                        leadId={item.id}
-                        item={item}
+                        dealId={item.id}
                         onSuccess={handleSuccess}
                     />
                     <button
@@ -68,7 +59,7 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
 export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } } = {}) {
 
     const statusColors = {
-        "New": "bg-green-500/10 border text-green-400 hover:bg-green-500/20 animate-pulse-slow",
+        "Open": "bg-green-500/10 border text-green-400 hover:bg-green-500/20 animate-pulse-slow",
         Contacted: "bg-blue-500/10  text-blue-400 hover:bg-blue-500/20",
         Interested: "bg-yellow-500/10  text-yellow-400 hover:bg-yellow-500/20",
 
@@ -77,6 +68,66 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
     };
 
     return [
+        {
+            key: "deal_title",
+            header: "Deal Title",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.deal_title}</p>
+                </div>
+            ),
+        },
+        {
+            key: "amount",
+            header: "Deal Amount",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.amount}</p>
+                </div>
+            ),
+        },
+        {
+            key: "discount",
+            header: "Discount",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.discount}</p>
+                </div>
+            ),
+        },
+        {
+            key: "tax",
+            header: "Tax",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.tax}</p>
+                </div>
+            ),
+        },
+        {
+            key: "total",
+            header: "Total",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.total}</p>
+                </div>
+            ),
+        },
         {
             key: "agent",
             header: "Agent",
@@ -102,18 +153,6 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
             ),
         },
         {
-            key: "Source",
-            header: "source",
-            render: (client) => (
-                <div
-                    onClick={() => handleRowClick(client.id)}
-                    className="flex items-center space-x-3 cursor-pointer"
-                >
-                    <p className="font-medium">{client.source}</p>
-                </div>
-            ),
-        },
-        {
             key: "Status",
             header: "status",
             render: (client) => (
@@ -129,6 +168,18 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
                     >
                         {client.status}
                     </span>
+                </div>
+            ),
+        },
+        {
+            key: "expected_close_date",
+            header: "Expected Close Date",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client?.expected_close_date}</p>
                 </div>
             ),
         },

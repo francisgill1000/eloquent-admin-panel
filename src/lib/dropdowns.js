@@ -15,7 +15,28 @@ export const cities = [
 export const leads_status = [
     { id: "New", name: "New" },
     { id: "Contacted", name: "Contacted" },
-    { id: "In Progress", name: "In Progress" },
+    { id: "Interested", name: "Interested" },
     { id: "Closed-Won", name: "Closed-Won" },
     { id: "Closed-Lost", name: "Closed-Lost" },
+];
+
+export const deals_status = [
+    { id: "Open", name: "Open" },
+    { id: "Negotiation", name: "Negotiation" },
+    { id: "Closed-Won", name: "Closed-Won" },
+    { id: "Closed-Lost", name: "Closed-Lost" },
+];
+
+export const sources = [
+    { id: "Facebook", name: "Facebook" },
+    { id: "Instagram", name: "Instagram" },
+    { id: "Website", name: "Website" },
+    { id: "WhatsApp", name: "WhatsApp" },
+    { id: "Referral", name: "Referral" },
+];
+
+export const contact_methods = [
+    { id: "Whatsapp", name: "Whatsapp" },
+    { id: "Email", name: "Email" },
+    { id: "Phone Call", name: "Phone Call" },
 ];

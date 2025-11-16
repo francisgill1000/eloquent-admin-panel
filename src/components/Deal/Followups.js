@@ -24,8 +24,7 @@ const Followups = ({
   endpoint,
   pageTitle = "Item",
   onSuccess = (e) => { e },
-  leadId = 0,
-  item = {},
+  dealId = 0,
 }) => {
 
   const [open, setOpen] = useState(false);
@@ -43,7 +42,7 @@ const Followups = ({
   const fetchRecords = async () => {
     try {
 
-      const { data } = await axios.get(`activities-by-lead/${leadId}`);
+      const { data } = await axios.get(`activities-by-lead/${dealId}`);
 
       if (data && Array.isArray(data)) {
         setActivities(data);
@@ -77,12 +76,12 @@ const Followups = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg bg-primary text-white border border-white/10 shadow-2xl rounded-2xl">
           <DialogHeader className="flex flex-col gap-2">
-            <DialogTitle className="mt-5  tracking-wide flex justify-between items-center">
-              <span>Follow-ups </span>
+            <DialogTitle className="mt-5 text-xl font-semibold tracking-wide flex justify-between items-center">
+              <span>Follow-up Activities</span>
               <AddFollowups
                 endpoint={endpoint}
                 pageTitle={pageTitle}
-                leadId={leadId}
+                dealId={dealId}
                 onSuccess={fetchRecords}
               />
             </DialogTitle>
@@ -90,7 +89,6 @@ const Followups = ({
 
           {/* Body */}
           <div className="mt-3">
-            <div className="ml-4">Customer: {item.customer?.name}</div>
             <div className="max-h-80 overflow-y-auto rounded-lg  bg-primary/20 p-3 backdrop-blur-sm">
               {loading ? (
                 <p className="text-center text-gray-300 text-sm py-6 animate-pulse">
@@ -101,49 +99,43 @@ const Followups = ({
                   No follow-ups yet.
                 </p>
               ) : (
-
                 <div className="space-y-3">
-                  {activities.map((act) => {
-                    // 1. Destructuring for cleaner access
-                    const { id, note, user, contact_method, follow_up_date, created_at } = act;
-
-                    // 2. Date Logic Simplification
-                    const dateTime = created_at
-                      ? new Date(created_at).toLocaleString()
-                      : "—";
-
-                    return (
-                      <div
-                        key={id}
-                        className="p-3 rounded-lg bg-primary/30 hover:bg-primary/40 transition-all border shadow-sm"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium text-white">
-                              Note: {note || "No note provided"}
-                            </p>
-
-                            <p className="text-xs text-gray-300 mt-1">
-                              By: {user?.name || "Unknown"}
-                            </p>
-                            <p className="text-xs text-gray-300 mt-1">
-                              Contact Via: {contact_method || "Unknown"}
-                            </p>
-                            <p className="text-xs text-gray-300 mt-1">
-                              Next Follow UP Date: {follow_up_date || "Unknown"}
-                            </p>
-                          </div>
-
-                          <span className="text-xs px-2 py-1 rounded-md">
-                            DateTime: {dateTime}
-                          </span>
+                  {activities.map((act) => (
+                    <div
+                      key={act.id}
+                      className="p-3 rounded-lg bg-primary/30 hover:bg-primary/40 transition-all border border-white/10 shadow-sm"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-white">
+                            {act.note || "No note provided"}
+                          </p>
+                          <p className="text-xs text-gray-300 mt-1">
+                            By: {act.user?.name || "Unknown"}
+                          </p>
                         </div>
+                        <span className="text-xs text-gray-400 bg-white/10 px-2 py-1 rounded-md">
+                          {act.follow_up_date
+                            ? new Date(act.follow_up_date).toLocaleDateString()
+                            : "—"}
+                        </span>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="pt-4 flex justify-end">
+            <Button
+              variant="secondary"
+              className="bg-white/20 hover:bg-white/30 text-white"
+              onClick={() => actualSetOpen(false)}
+            >
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

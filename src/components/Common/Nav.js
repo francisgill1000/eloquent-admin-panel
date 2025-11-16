@@ -49,7 +49,7 @@ const menus = {
   ],
   sales: [
     { name: "Home", href: "/", icon: <Home size={20} /> },
-    { name: "Dashboard", href: "/apps/crm", icon: <AppWindow size={20} /> },
+    { name: "Dashboard", href: "/apps/sales", icon: <AppWindow size={20} /> },
     { name: "Agents", href: "/apps/sales/agents", icon: <UserIcon size={20} /> },
     { name: "Customers", href: "/apps/sales/customers", icon: <UserIcon size={20} /> },
     { name: "Leads", href: "/apps/sales/leads", icon: <Banknote size={20} /> },

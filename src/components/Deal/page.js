@@ -8,9 +8,8 @@ import Pagination from "@/lib/Pagination";
 import DataTable from "@/components/ui/DataTable";
 import Columns from "./columns";
 import { Input } from "@/components/ui/input";
-import Create from "./Create";
 
-export default function Lead({ options }) {
+export default function Deal({ options }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,7 +90,6 @@ export default function Lead({ options }) {
             onChange={(e) => setSearch(e.target.value)}
             className="bg-[#0f0f0f] text-white p-2 rounded-lg outline-none border border-[#00ffcc1a] focus:border-[#00ffcc] w-48 md:w-64"
           />
-          <Create options={options} onSuccess={() => fetchRecords(search)} />
         </div>
       </div>
 

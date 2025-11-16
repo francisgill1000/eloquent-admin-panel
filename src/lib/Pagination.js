@@ -48,11 +48,11 @@ function Pagination({
   return (
     <div
       className={
-        "flex justify-between items-center px-4 py-3 border-t border-gray-200 rounded-b-lg flex-col sm:flex-row space-y-3 sm:space-y-0 " +
+        "flex justify-between bg-[#1b1b1b] items-center px-4 py-3 border-t border-gray-200 rounded-b-lg flex-col sm:flex-row space-y-3 sm:space-y-0 " +
         className
       }
     >
-      <p className="text-sm text-gray-600">
+      <p className="text-sm">
         {labels.showing} <span className="font-semibold">{start}</span>{" "}
         {labels.to} <span className="font-semibold">{end}</span> {labels.of}{" "}
         <span className="font-semibold">{total}</span> {labels.results}
@@ -64,7 +64,7 @@ function Pagination({
           onClick={goPrev}
           disabled={!canPrev}
           aria-label={labels.previous}
-          className="p-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+          className="p-2 border border-gray-300 rounded-md text-sm  hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
         >
           {LeftIcon ? (
             <LeftIcon className="w-4 h-4 mr-1" />
@@ -84,7 +84,7 @@ function Pagination({
           onClick={goNext}
           disabled={!canNext}
           aria-label={labels.next}
-          className="p-2 border border-gray-300 rounded-md text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+          className="p-2 border border-gray-300 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
         >
           {labels.next}
           {RightIcon ? (
@@ -101,7 +101,7 @@ function Pagination({
             onChange={(e) =>
               onPerPageChange && onPerPageChange(Number(e.target.value))
             }
-            className="ml-4 p-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
+            className="ml-4 p-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
           >
             {pageSizeOptions.map((n) => (
               <option key={n} value={n}>
