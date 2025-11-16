@@ -7,6 +7,7 @@ import { Clock, Handshake, MoreVertical, PenBox, Trash2 } from "lucide-react";
 
 import { parseApiError } from "@/lib/utils";
 import Followups from "./Followups";
+import EditDeal from "./Edit";
 
 function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
     const [openEdit, setOpenEdit] = useState(false);
@@ -38,12 +39,21 @@ function OptionsMenu({ endpoint, item, pageTitle, onSuccess = (e) => { e } }) {
 
             {openEdit && (
                 <div className="absolute mt-2 w-50px bg-primary text-whtie border shadow-lg z-10">
+                    <EditDeal
+                        endpoint={endpoint}
+                        pageTitle={pageTitle}
+                        item={item}
+                        onSuccess={handleSuccess}
+                    />
+
                     <Followups
                         endpoint={endpoint}
                         pageTitle={pageTitle}
                         dealId={item.id}
+                        item={item}
                         onSuccess={handleSuccess}
                     />
+
                     <button
                         onClick={() => onDelete(item.id)}
                         className="flex items-center gap-2 text-sm w-full text-left px-3 py-2 hover:bg-[#00ffcc1a] text-white"
@@ -70,7 +80,7 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
     return [
         {
             key: "deal_title",
-            header: "Deal Title",
+            header: "Title",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
@@ -82,7 +92,7 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
         },
         {
             key: "amount",
-            header: "Deal Amount",
+            header: "Amount",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
@@ -173,7 +183,7 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
         },
         {
             key: "expected_close_date",
-            header: "Expected Close Date",
+            header: "Expt Close Date",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}

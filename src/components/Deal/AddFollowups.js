@@ -12,8 +12,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import axios from "axios";
 import { parseApiError } from "@/lib/utils";
+import { contact_methods } from "@/lib/dropdowns";
+import DropDown from "@/components/ui/DropDown";
+import DatePicker from "../ui/DatePicker";
 
 const AddFollowups = ({
   endpoint,
@@ -24,14 +26,14 @@ const AddFollowups = ({
   const [actualOpen, actualSetOpen] = useState(false);
   const [globalError, setGlobalError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ note: "" });
+  const [form, setForm] = useState({ note: "", contact_method: "", follow_up_date: "" });
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const sendWhatsApp = (phone, note) => {
-    if (!phone) return alert("Lead phone number not available");
+    if (!phone) return alert("Deal phone number not available");
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(note)}`;
     window.open(url, "_blank");
   };
@@ -40,8 +42,8 @@ const AddFollowups = ({
     setGlobalError(null);
     setLoading(true);
     try {
-      const payload = { note: form.note, lead_id: dealId };
-      await axios.post(`leads-activities`, payload);
+      const payload = { deal_id: dealId , ...form };
+      await axios.post(`deals-activities`, payload);
       await new Promise((r) => setTimeout(r, 1000));
 
       // Optionally send WhatsApp message
@@ -53,7 +55,7 @@ const AddFollowups = ({
       });
 
       actualSetOpen(false);
-      setForm({ note: "" });
+      setForm({ note: "", contact_method: "", follow_up_date: "" });
     } catch (error) {
       setGlobalError(parseApiError(error));
     } finally {
@@ -66,7 +68,7 @@ const AddFollowups = ({
       {/* Trigger Button */}
       <Button
         onClick={() => actualSetOpen(true)}
-        className="bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-2 rounded-lg shadow-sm transition-all"
+        className="bg-muted/50 hover:bg-muted/70 text-white font-medium px-3 py-2 rounded-lg shadow-sm transition-all"
       >
         + New Follow-up
       </Button>
@@ -76,7 +78,7 @@ const AddFollowups = ({
         <DialogContent className="max-w-md bg-primary text-white rounded-2xl shadow-xl">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold tracking-wide">
-              Add Follow-up  {dealId}
+              Add Follow-up
             </DialogTitle>
           </DialogHeader>
 
@@ -93,6 +95,30 @@ const AddFollowups = ({
                 className=""
               />
             </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-gray-300 mb-1">
+                Contact Method
+              </label>
+              <DropDown
+                items={contact_methods}
+                value={form.contact_method}
+                onChange={(e) => handleChange("contact_method", e)} />
+            </div>
+
+
+
+            <div>
+              <label className="block text-xs uppercase tracking-wide text-gray-300 mb-1">
+                Follow Up Date
+              </label>
+              <DatePicker
+                value={form.follow_up_date}
+                onChange={(e) => handleChange("follow_up_date", e)}
+                placeholder="Pick a date"
+              />
+            </div>
+
           </div>
 
           {/* Error Message */}
