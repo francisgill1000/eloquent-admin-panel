@@ -30,6 +30,7 @@ import {
   CircleQuestionMark,
   User2,
   Building,
+  LucideWorkflow,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -54,6 +55,7 @@ const menus = {
     { name: "Customers", href: "/apps/sales/customers", icon: <UserIcon size={20} /> },
     { name: "Leads", href: "/apps/sales/leads", icon: <Banknote size={20} /> },
     { name: "Deals", href: "/apps/sales/deals", icon: <BarChart2 size={20} /> },
+    { name: "Todos", href: "/apps/sales/todos", icon: <LucideWorkflow size={20} /> },
   ],
   invoice: [
     { name: "Home", href: "/", icon: <Home size={20} /> },

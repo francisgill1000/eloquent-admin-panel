@@ -95,6 +95,18 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
             ),
         },
         {
+            key: "user_code",
+            header: "Agent Code",
+            render: (client) => (
+                <div
+                    onClick={() => handleRowClick(client.id)}
+                    className="flex items-center space-x-3 cursor-pointer"
+                >
+                    <p className="font-medium">{client.user_code || "-"}</p>
+                </div>
+            ),
+        },
+        {
             key: "email",
             header: "email",
             render: (client) => (
@@ -130,7 +142,7 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
                 </div>
             ),
         },
-            {
+        {
             key: "address",
             header: "Address",
             render: (client) => {
@@ -152,7 +164,7 @@ export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } 
                 );
             },
         },
-      
+
         {
             key: "options",
             header: "Options",

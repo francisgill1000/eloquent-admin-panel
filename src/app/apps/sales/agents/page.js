@@ -1,6 +1,6 @@
 "use client";
 
-import User from "@/components/User/page";
+import User from "@/components/Agent/page";
 
 
 let PAGE_TITLE = "Sales Agent";

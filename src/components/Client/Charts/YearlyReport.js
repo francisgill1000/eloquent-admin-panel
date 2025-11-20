@@ -42,17 +42,23 @@ const YearlyCRMLineChart = () => {
   }, []);
 
   return (
-    <ResponsiveContainer width="100%">
-      <LineChart data={crmData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-        <XAxis dataKey="month" stroke="#fff" />
-        <YAxis stroke="#00ffcc" />
-        <Tooltip stroke="#000" />
-        <Line type="monotone" dataKey="leads" stroke="#8884d8" strokeWidth={2} />
-        <Line type="monotone" dataKey="deals" stroke="#ca82acff" strokeWidth={2} />
-        <Line type="monotone" dataKey="revenue" stroke="#00ffcc" strokeWidth={2} />
-      </LineChart>
-    </ResponsiveContainer>
+    <>
+      <div className="flex  justify-between">
+        <h3 className="text-lg font-semibold text-gray-200">Income By Customer Onboard Monthly</h3>
+      </div>
+      <ResponsiveContainer width="100%" height={300} className={"mt-5"}>
+        <LineChart data={crmData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+          <XAxis dataKey="month" stroke="#fff" />
+          <YAxis stroke="#00ffcc" />
+          <Tooltip stroke="#000" />
+          <Line type="monotone" dataKey="leads" stroke="#8884d8" strokeWidth={2} />
+          <Line type="monotone" dataKey="deals" stroke="#ca82acff" strokeWidth={2} />
+          <Line type="monotone" dataKey="revenue" stroke="#00ffcc" strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+
   );
 };
 

@@ -101,7 +101,7 @@ function Pagination({
             onChange={(e) =>
               onPerPageChange && onPerPageChange(Number(e.target.value))
             }
-            className="ml-4 p-2 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
+            className="ml-4 p-2 bg-primary border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500"
           >
             {pageSizeOptions.map((n) => (
               <option key={n} value={n}>

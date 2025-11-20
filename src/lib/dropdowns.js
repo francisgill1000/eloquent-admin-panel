@@ -40,3 +40,10 @@ export const contact_methods = [
     { id: "Email", name: "Email" },
     { id: "Phone Call", name: "Phone Call" },
 ];
+
+export const todos_status = [
+    { id: "Pending", name: "Pending" },
+    { id: "Hold", name: "Hold" },
+    { id: "Done", name: "Done" },
+    { id: "Cancelled", name: "Cancelled" },
+];

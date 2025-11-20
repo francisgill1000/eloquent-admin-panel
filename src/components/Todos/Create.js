@@ -1,0 +1,145 @@
+// @ts-nocheck
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import DropDown from "@/components/ui/DropDown";
+
+
+import { parseApiError } from "@/lib/utils";
+import { countries, cities } from "@/lib/dropdowns";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import DatePicker from "../ui/DatePicker";
+// import MultiDropDown from "../ui/MultiDropDown";
+
+let defaultPayload = {
+    title: "",
+    description: "",
+    due_date: "",
+};
+
+const Create = ({ options, onSuccess = (e) => { e } }) => {
+
+    const [open, setOpen] = useState(false);
+    const [globalError, setGlobalError] = useState(null);
+    const [departments, setDepartments] = useState([]);
+
+    const [branches, setBranches] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const [form, setForm] = useState(defaultPayload);
+
+    useEffect(() => {
+        if (open) {
+            setForm(defaultPayload);
+        }
+    }, [open]);
+
+    const handleChange = (field, value) => {
+        setForm((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const onSubmit = async () => {
+        setGlobalError(null);
+        setLoading(true);
+        try {
+
+            let r = await axios.post(options.endpoint,  form);
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // inform to parent component
+            onSuccess({ title: `${options.page_title} Save`, description: `${options.page_title} Save successfully` });
+            setOpen(false);
+        } catch (error) {
+            setGlobalError((error?.response?.data?.message));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <>
+            <Button
+                onClick={() => setOpen(true)}
+                className="bg-muted/50 text-white rounded-lg font-semibold shadow-md hover:bg-muted/70 transition-all"
+            >
+                New {options.page_title}
+            </Button>
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="max-w-lg bg-primary text-muted">
+                    <DialogHeader>
+                        <DialogTitle>New {options.page_title}</DialogTitle>
+                        <p className="text-sm text-muted-foreground italic mb-3">{`Let's create a new ${options.page_title} — just speak or type the details.`}</p>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1">Title</label>
+                            <Input
+                                type={'title'}
+                                value={form.title}
+                                onChange={(e) => handleChange("title", e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium mb-1">Description</label>
+                            <Textarea
+                                value={form.description}
+                                onChange={(e) => handleChange("description", e.target.value)}
+                                placeholder="Enter description..."
+                                rows={4} // adjust height
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs uppercase tracking-wide text-gray-300 mb-1">
+                                Due Date
+                            </label>
+                            <DatePicker
+                                value={form.due_date}
+                                onChange={(e) => handleChange("due_date", e)}
+                                placeholder="Pick a date"
+                            />
+                        </div>
+
+                    </div>
+
+                    {globalError && (
+                        <div className="mb-4 p-3 border border-red-500  text-red-700 rounded-lg" role="alert">
+                            {globalError}
+                        </div>
+                    )}
+
+                    <DialogFooter className="mt-4">
+                        <Button variant="outline" className="bg-primary text-white" onClick={() => setOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={onSubmit}
+                            disabled={loading}
+                            className="bg-muted/50 text-white"
+                        >
+                            {loading ? "Saving..." : `Create ${options.page_title}`}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
+};
+
+export default Create;

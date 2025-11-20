@@ -70,89 +70,46 @@ function OptionsMenu({ endpoint, admin, pageTitle, onSuccess = (e) => { e } }) {
 }
 
 export default function Columns({ endpoint, pageTitle, onSuccess = (e) => { e } } = {}) {
+
+    const statusColors = {
+        "Pending": "bg-green-500/10 border text-green-400 hover:bg-green-500/20 animate-pulse-slow",
+        Hold: "bg-blue-500/10  text-blue-400 hover:bg-blue-500/20",
+        Done: "bg-yellow-500/10  text-yellow-400 hover:bg-yellow-500/20",
+        "Cancelled": "bg-gray-500/10  text-gray-100 hover:bg-green-500/20",
+    };
+
     return [
         {
-            key: "client",
-            header: "Name",
-            render: (client) => (
-                <div
-                    onClick={() => handleRowClick(client.id)}
-                    className="flex items-center space-x-3 cursor-pointer"
-                >
-                    <img
-                        alt={client.name}
-                        className="w-10 h-10 rounded-full object-cover shadow-sm"
-                        src={
-                            client.profile_picture ||
-                            `https://placehold.co/40x40/0f0f0f/00ffcc?text=${client.name.charAt(0)}`
-                        }
-
-                    />
-                    <div>
-                        <p className="font-medium">{client.name}</p>
-                    </div>
-                </div>
-            ),
+            key: "title",
+            header: "Title",
         },
         {
-            key: "email",
-            header: "email",
-            render: (client) => (
-                <div
-                    onClick={() => handleRowClick(client.id)}
-                    className="flex items-center space-x-3 cursor-pointer"
-                >
-                    <p className="font-medium">{client.email}</p>
-                </div>
-            ),
+            key: "description",
+            header: "description",
         },
         {
-            key: "phone",
-            header: "phone",
-            render: (client) => (
-                <div
-                    onClick={() => handleRowClick(client.id)}
-                    className="flex items-center space-x-3 cursor-pointer"
-                >
-                    <p className="font-medium">{client.phone || "-"}</p>
-                </div>
-            ),
+            key: "due_date",
+            header: "due_date",
         },
         {
-            key: "whatsapp",
-            header: "whatsapp",
+            key: "Status",
+            header: "status",
             render: (client) => (
                 <div
                     onClick={() => handleRowClick(client.id)}
                     className="flex items-center space-x-3 cursor-pointer"
                 >
-                    <p className="font-medium">{client.whatsapp || "-"}</p>
-                </div>
-            ),
-        },
-            {
-            key: "address",
-            header: "Address",
-            render: (client) => {
-                const city = client.city || "-";
-                const country = client.country || "-";
-
-                // If both are "-", just show "-"
-                const displayText = city === "-" && country === "-" ? "-" : `${city}${country !== "-" ? `, ${country}` : ""}`;
-
-                return (
-                    <div
-                        role="button"
-                        onClick={() => handleRowClick(client.id)}
-                        className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-100 rounded px-2 py-1 transition-colors ${displayText === "-" ? "cursor-default hover:bg-transparent" : ""}`}
-                        title={displayText !== "-" ? displayText : undefined}
+                    <span
+                        className={`
+          px-3 py-1 rounded-full text-sm font-medium 
+          ${statusColors[client.status] || "bg-gray-100 text-gray-700"}
+        `}
                     >
-                        <p className="font-medium truncate">{displayText?.split("_")[1] || "-"}</p>
-                    </div>
-                );
-            },
+                        {client.status}
+                    </span>
+                </div>
+            ),
         },
-      
         {
             key: "options",
             header: "Options",

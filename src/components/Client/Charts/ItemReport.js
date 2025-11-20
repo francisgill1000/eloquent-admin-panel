@@ -47,28 +47,35 @@ const ItemReport = () => {
             {loading ? (
                 <p className="text-gray-400 text-sm">Loading chart...</p>
             ) : (
-                <ResponsiveContainer width="100%" height={280}>
-                    <BarChart
-                        data={barData}
-                        margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
-                    >
-                        <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="rgba(255,255,255,0.04)"
-                        />
-                        <XAxis dataKey="name" stroke="#fff" />
-                        <YAxis stroke="#fff" />
-                        <Tooltip
-                            cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                            contentStyle={{
-                                backgroundColor: "#1a1a1a",
-                                border: "1px solid #00ffcc1a",
-                                borderRadius: "8px",
-                            }}
-                        />
-                        <Bar dataKey="sales" fill="#00ffcc" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                </ResponsiveContainer>
+                <>
+                    <div className="">
+                        <h3 className="text-lg font-semibold text-gray-200">Customer Onboard Monthly</h3>
+                    </div>
+
+                    <ResponsiveContainer width="100%" height={300} className={"mt-5"}>
+                        <BarChart
+                            data={barData}
+                            margin={{ top: 20, right: 20, left: 0, bottom: 0 }}
+                        >
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="rgba(255,255,255,0.04)"
+                            />
+                            <XAxis dataKey="name" stroke="#fff" />
+                            <YAxis stroke="#fff" />
+                            <Tooltip
+                                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                                contentStyle={{
+                                    backgroundColor: "#1a1a1a",
+                                    border: "1px solid #00ffcc1a",
+                                    borderRadius: "8px",
+                                }}
+                            />
+                            <Bar dataKey="sales" fill="#00ffcc" radius={[8, 8, 0, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </>
+
             )}
         </div>
     );
